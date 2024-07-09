@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  php:
+    image: php:7.4-fpm
+    restart: unless-stopped
+    volumes:
+      - ./php:/var/www/html
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+      - ./php:/var/www/html
+    networks:
+      - app-network
+
+  mysql:
+    image: mysql:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: my-secret-pw
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: myuserpassword
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local
