@@ -1,0 +1,4 @@
+---
+
+- name: copy docker-compose
+  include_tasks: docker-compose.yml
